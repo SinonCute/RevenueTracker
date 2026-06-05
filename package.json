@@ -1,0 +1,61 @@
+{
+  "name": "revenue-tracker",
+  "version": "0.1.5",
+  "description": "Local desktop revenue and machine payment tracker",
+  "main": "out/main/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "typecheck": "tsc --noEmit",
+    "build": "electron-vite build",
+    "dist": "electron-vite build && electron-builder",
+    "preview": "electron-vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "date-fns": "^4.1.0",
+    "electron-updater": "^6.6.2",
+    "lucide-react": "^0.468.0",
+    "recharts": "^2.15.0",
+    "sql.js": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "@types/sql.js": "^1.4.11",
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.12",
+    "electron-vite": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.9.0",
+    "vite": "^6.0.0"
+  },
+  "build": {
+    "appId": "com.local.revenuetracker",
+    "productName": "Revenue Tracker",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules/sql.js/dist/sql-wasm.wasm",
+        "to": "sql-wasm.wasm"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
