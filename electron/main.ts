@@ -168,14 +168,23 @@ async function initDb(): Promise<void> {
   if (!paymentColumns.some((column) => column.name === 'kind')) {
     db.run("ALTER TABLE machine_payments ADD COLUMN kind TEXT NOT NULL DEFAULT 'actual'");
   }
+  db.run("UPDATE machine_payments SET kind = 'seed' WHERE note = 'Auto-added historical row'");
   persistDb();
 }
 
 function machineWithStats(row: any) {
-  const stats = selectOne<{ paymentCount: number; totalPaidVnd: number }>(
-    'SELECT COUNT(*) AS paymentCount, COALESCE(SUM(amountVnd), 0) AS totalPaidVnd FROM machine_payments WHERE machineId = ?',
+  const paymentCount = selectOne<{ paymentCount: number }>(
+    `SELECT COUNT(*) AS paymentCount
+     FROM machine_payments
+     WHERE machineId = ? AND kind != ?`,
+    [row.id, 'seed']
+  )?.paymentCount || 0;
+  const totalPaidVnd = selectOne<{ totalPaidVnd: number }>(
+    `SELECT COALESCE(SUM(amountVnd), 0) AS totalPaidVnd
+     FROM machine_payments
+     WHERE machineId = ?`,
     [row.id]
-  ) || { paymentCount: 0, totalPaidVnd: 0 };
+  )?.totalPaidVnd || 0;
   const machine = {
     id: row.id,
     name: row.name,
@@ -184,8 +193,8 @@ function machineWithStats(row: any) {
     endDate: row.endDate,
     intervalCount: row.intervalCount,
     intervalUnit: row.intervalUnit as IntervalUnit,
-    paymentCount: stats.paymentCount,
-    totalPaidVnd: stats.totalPaidVnd
+    paymentCount,
+    totalPaidVnd
   };
   return { ...machine, nextDueDate: nextDueDate(machine) };
 }

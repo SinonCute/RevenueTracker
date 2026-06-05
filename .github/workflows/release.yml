@@ -27,11 +27,11 @@ jobs:
 
       - name: Build Windows installer
         run: npm run dist
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
             release/Revenue Tracker Setup *.exe
