@@ -27,6 +27,8 @@ jobs:
 
       - name: Build Windows installer
         run: npm run dist
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
