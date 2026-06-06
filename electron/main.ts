@@ -72,18 +72,21 @@ function insertPastPayments(machine: {
   endDate?: string | null;
   intervalCount: number;
   intervalUnit: IntervalUnit;
+  forceCreatePayment?: boolean;
 }): void {
   if (!isValidIsoDate(machine.startDate)) throw new Error(`Invalid start date for machine ${machine.id}`);
   if (machine.endDate && !isValidIsoDate(machine.endDate)) throw new Error(`Invalid end date for machine ${machine.id}`);
-  let dueDate = machine.startDate;
+  let dueDate = firstDueDate(machine);
   const currentDate = todayIso();
-  while (dueDate < currentDate) {
+  let forceCreatePayment = !!machine.forceCreatePayment;
+  while (dueDate < currentDate || forceCreatePayment) {
     db.run(
       `INSERT INTO machine_payments (machineId, dueDate, paidDate, amountVnd, note, kind)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [machine.id, dueDate, dueDate, machine.priceVnd, 'Auto-added historical row', 'seed']
     );
     dueDate = addInterval(dueDate, machine.intervalCount, machine.intervalUnit);
+    forceCreatePayment = false;
   }
 }
 

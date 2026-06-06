@@ -223,7 +223,7 @@ function App() {
       .map((line) => line.trim())
       .filter(Boolean)
       .map((line) => {
-        const [name, priceVnd, startDate, endDate, intervalCount = '1', intervalUnit = 'months'] = line
+        const [name, priceVnd, startDate, endDate, intervalCount = '1', intervalUnit = 'months', forceCreatePayment = 'false'] = line
           .split(',')
           .map((part) => part.trim());
         return {
@@ -232,7 +232,8 @@ function App() {
           startDate: normalizeDateInput(startDate),
           endDate: endDate ? normalizeDateInput(endDate) : null,
           intervalCount: Number(intervalCount),
-          intervalUnit: intervalUnit as IntervalUnit
+          intervalUnit: intervalUnit as IntervalUnit,
+          forceCreatePayment: /^(true|1|yes|y)$/i.test(forceCreatePayment)
         };
       });
   }
@@ -251,7 +252,7 @@ function App() {
         !validUnits.has(machine.intervalUnit)
     );
     if (invalidRow || machinesToCreate.length === 0) {
-      setStatus('Bulk format: Name, Price VND, Start date, First due date, Every, Unit');
+      setStatus('Bulk format: Name, Price VND, Start date, First due date, Every, Unit, Force create payment');
       return;
     }
     try {

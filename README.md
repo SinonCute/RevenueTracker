@@ -48,13 +48,13 @@ Open `Machines`, then use `Bulk add machines`.
 Enter one machine per line:
 
 ```text
-Name, Price VND, Start date, First due date, Every, Unit
+Name, Price VND, Start date, First due date, Every, Unit, Force create payment
 ```
 
 Example:
 
 ```text
-Machine A, 500000, 2026-06-01, 2026-06-08, 1, weeks
+Machine A, 500000, 2026-06-01, 2026-06-08, 1, weeks, true
 Machine B, 1200000, 2026-06-01, 2026-07-01, 1, months
 ```
 
@@ -67,6 +67,7 @@ months
 ```
 
 Dates in bulk add can be entered as `YYYY-MM-DD` or `M/D/YYYY`.
+The last column is optional. Use `true`, `1`, `yes`, or `y` to force-create the first payment row even if it has not passed yet.
 
 ### Revenue And Expenses
 
